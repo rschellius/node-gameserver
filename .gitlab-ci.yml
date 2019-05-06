@@ -1,0 +1,62 @@
+#
+# GitLab example CI/CD script
+# See https://docs.gitlab.com/ee/ci/yaml/README.html
+#
+# Secure Variables like $DB_PASSWORD can added by going to your
+# project’s Settings ➔ CI / CD ➔ Variables on the GitLab website.
+#
+image: node:latest
+
+stages:
+  - test
+  - production
+
+#
+# Global variables
+#
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+
+#
+# Testing nodejes backend
+#
+testing:
+  image: node:carbon
+  stage: test
+  services:
+    - docker:dind
+  variables:
+    NODE_ENV: development
+    # DB_USER: $DB_USER
+    # DB_PASSWORD: $DB_PASSWORD
+    # DB_HOST: $DB_HOST
+    # DB_PORT: $DB_PORT
+    # DB_DATABASE: $DB_DATABASE
+  before_script:
+    - npm install --no-optional
+  script:
+    - npm run test
+
+#
+# Deploy to Heroku
+# DPL is a deploy tool made for continuous deployment that’s developed and used
+# by Travis CI, but can also be used with GitLab CI.
+# https://docs.gitlab.com/ee/ci/examples/deployment/#using-dpl-with-docker
+#
+production:
+  type: deploy
+  stage: production
+  image: ruby:latest
+  script:
+    # Get your key at https://dashboard.heroku.com/account
+    # and add it to your project environment variables at GitLab.
+    - echo "Heroku api key = $HEROKU_API_KEY"
+    # The name of your app at Heroku. See https://dashboard.heroku.com/apps.
+    - echo "Heroku appname = $HEROKU_APP_NAME"
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+    - master
