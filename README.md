@@ -2,6 +2,8 @@
 
 Dit project is voorbeeldcode die we gebruiken in de lessen Programmeren 4.
 
+Een online versie van deze voorbeeldserver draait op [Heroku](https://www.heroku.com) op [https://node-gameserver.herokuapp.com](https://node-gameserver.herokuapp.com/api/games)
+
 ## Installatie
 
 Voer de volgende commands uit.
@@ -9,6 +11,14 @@ Voer de volgende commands uit.
 ```
 npm install
 npm start
+```
+
+## Tests
+
+Voer de testcases uit door het volgende commando te runnen:
+
+```
+npm run test
 ```
 
 # Gebruikte packages

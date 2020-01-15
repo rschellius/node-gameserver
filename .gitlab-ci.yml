@@ -22,10 +22,8 @@ variables:
 # Testing nodejes backend
 #
 testing:
-  image: node:carbon
+  image: markhobson/node-chrome:latest
   stage: test
-  services:
-    - docker:dind
   variables:
     NODE_ENV: development
     # DB_USER: $DB_USER
@@ -37,6 +35,7 @@ testing:
     - npm install --no-optional
   script:
     - npm run test
+    - npm run sonar
 
 #
 # Deploy to Heroku
